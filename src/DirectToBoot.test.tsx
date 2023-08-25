@@ -50,4 +50,16 @@ describe("Direct To Boot", () => {
       ).toBeInTheDocument()
     );
   });
+
+  it("가게에 전화를 거는 폴백 버튼이 보인다.", async () => {
+    render(<DirectToBoot orderId="error-id" />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("문제가 생겼습니다. 이 번호로 전화를 걸어주세요.")
+      ).toBeInTheDocument()
+    );
+    const button = screen.getByText("02-123-4567");
+    await waitFor(() => expect(button).toBeInTheDocument(), { timeout: 3000 });
+  });
 });
