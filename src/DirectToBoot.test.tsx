@@ -1,20 +1,22 @@
+/* eslint-disable testing-library/prefer-find-by */
 import { render, screen, waitFor } from "@testing-library/react";
 import { DirectToBoot } from "./DirectToBoot";
 
-import { createServer, Server } from "miragejs";
+import { Server } from "miragejs";
+import { createMockServer } from "./createMockServer";
 
 let server: Server;
 
 describe("Direct To Boot", () => {
   beforeEach(() => {
-    server = createServer({});
+    server = createMockServer();
   });
 
   afterEach(() => {
     server.shutdown();
   });
 
-  it("'트렁크로 간편 배송 서비스' 텍스트를 렌더링한다.", () => {
+  it("초기 상태인 '트렁크로 간편 배송 서비스'를 렌더링한다.", () => {
     render(<DirectToBoot orderId="order-id" />);
 
     expect(screen.getByText("트렁크로 간편 배송 서비스")).toBeInTheDocument();
@@ -28,13 +30,6 @@ describe("Direct To Boot", () => {
   });
 
   it("주문이 준비 완료되면 버튼이 활성화된다.", async () => {
-    server.get("/api/orders/:id", (schema, request) => {
-      return {
-        id: request.params.id,
-        status: "ready",
-      };
-    });
-
     render(<DirectToBoot orderId="order-id" />);
 
     expect(screen.getByText("트렁크로 간편 배송 서비스")).toBeInTheDocument();
@@ -47,5 +42,12 @@ describe("Direct To Boot", () => {
     expect(button).toBeDisabled();
 
     await waitFor(() => expect(button).toBeEnabled(), { timeout: 3000 });
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          "가게에 도착하셨다면 버튼을 눌러주세요! 주문하신 물건을 저희 직원이 가져다 드리겠습니다!"
+        )
+      ).toBeInTheDocument()
+    );
   });
 });

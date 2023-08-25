@@ -1,5 +1,8 @@
 import "./App.css";
 import { DirectToBoot } from "./DirectToBoot";
+import { createMockServer } from "./createMockServer";
+
+createMockServer();
 
 function App() {
   return (
