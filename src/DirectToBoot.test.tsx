@@ -4,8 +4,15 @@ import { DirectToBoot } from "./DirectToBoot";
 
 import { Server } from "miragejs";
 import { createMockServer } from "./createMockServer";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactElement } from "react";
 
 let server: Server;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retryDelay: 0 },
+  },
+});
 
 describe("Direct To Boot", () => {
   beforeEach(() => {
@@ -16,8 +23,14 @@ describe("Direct To Boot", () => {
     server.shutdown();
   });
 
+  const myRender = (ui: ReactElement) => {
+    return render(
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    );
+  };
+
   it("초기 상태인 '트렁크로 간편 배송 서비스'를 렌더링한다.", () => {
-    render(<DirectToBoot orderId="order-id" />);
+    myRender(<DirectToBoot orderId="order-id" />);
 
     expect(screen.getByText("트렁크로 간편 배송 서비스")).toBeInTheDocument();
     expect(
@@ -30,7 +43,7 @@ describe("Direct To Boot", () => {
   });
 
   it("주문이 준비 완료되면 버튼이 활성화된다.", async () => {
-    render(<DirectToBoot orderId="order-id" />);
+    myRender(<DirectToBoot orderId="order-id" />);
 
     expect(screen.getByText("트렁크로 간편 배송 서비스")).toBeInTheDocument();
     expect(
@@ -52,14 +65,19 @@ describe("Direct To Boot", () => {
   });
 
   it("가게에 전화를 거는 폴백 버튼이 보인다.", async () => {
-    render(<DirectToBoot orderId="error-id" />);
+    myRender(<DirectToBoot orderId="error-order" />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("문제가 생겼습니다. 이 번호로 전화를 걸어주세요.")
-      ).toBeInTheDocument()
+    await waitFor(
+      () =>
+        expect(
+          screen.getByText("문제가 생겼습니다. 이 번호로 전화를 걸어주세요.")
+        ).toBeInTheDocument(),
+      { timeout: 3000 }
     );
+
     const button = screen.getByText("02-123-4567");
-    await waitFor(() => expect(button).toBeInTheDocument(), { timeout: 3000 });
+    await waitFor(() => expect(button).toBeInTheDocument(), {
+      timeout: 3000,
+    });
   });
 });
