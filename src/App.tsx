@@ -1,13 +1,18 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { DirectToBoot } from "./DirectToBoot";
 import { createMockServer } from "./createMockServer";
 
 createMockServer();
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <div className="App">
-      <DirectToBoot orderId="order-id" />
+      <QueryClientProvider client={queryClient}>
+        <DirectToBoot orderId="error-order" />
+      </QueryClientProvider>
     </div>
   );
 }
