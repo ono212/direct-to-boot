@@ -1,5 +1,5 @@
-import { getMessage } from "./utils";
-import { useFetchOrder } from "./useFetchOrder";
+import { getMessage } from "../utils";
+import { useOrder } from "../hooks/useOrder";
 
 const createButton = (status: string, onClick: () => void) => {
   switch (status) {
@@ -15,14 +15,13 @@ const createButton = (status: string, onClick: () => void) => {
 };
 
 export const DirectToBoot = ({ orderId }: { orderId: string }) => {
-  const { status, notifyStore } = useFetchOrder(orderId);
-  const onClick = () => notifyStore(orderId);
+  const { status, notifyStore } = useOrder(orderId);
 
   return (
     <div>
       <h1>트렁크로 간편 배송 서비스</h1>
       <p>{getMessage(status)}</p>
-      {createButton(status, onClick)}
+      {createButton(status, notifyStore)}
     </div>
   );
 };

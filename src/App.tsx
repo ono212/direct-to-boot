@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
-import { DirectToBoot } from "./DirectToBoot";
-import { createMockServer } from "./createMockServer";
+import { DirectToBoot } from "./components/DirectToBoot";
+import { createMockServer } from "./mocks/createMockServer";
 
 createMockServer();
 
