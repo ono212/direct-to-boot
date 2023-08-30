@@ -33,6 +33,15 @@ export function createMockServer() {
       });
 
       this.post("/api/orders/:id", (schema, request) => {
+        const id = request.params.id;
+
+        if (["unreachable-order-id"].includes(id)) {
+          return new Response(
+            500,
+            {},
+            { message: "order-id가 유효하지 않습니다." }
+          );
+        }
         return {
           id: request.params.id,
           status: "notified",

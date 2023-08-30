@@ -31,6 +31,7 @@ export const useFetchOrder = (orderId: string) => {
     sendNotifyStore,
     {
       onSuccess: () => setStatus("notified"),
+      onError: () => setStatus("error"),
     }
   );
 
