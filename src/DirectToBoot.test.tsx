@@ -5,6 +5,7 @@ import { Server } from "miragejs";
 import { createMockServer } from "./createMockServer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactElement } from "react";
+import userEvent from "@testing-library/user-event";
 
 let server: Server;
 const queryClient = new QueryClient({
@@ -75,5 +76,31 @@ describe("Direct To Boot", () => {
     await waitFor(() => expect(button).toBeInTheDocument(), {
       timeout: 3000,
     });
+  });
+
+  it("손님이 버튼을 클릭하면 가게에 알림이 간다.", async () => {
+    myRender(<DirectToBoot orderId="order-id" />);
+
+    expect(screen.getByText("트렁크로 간편 배송 서비스")).toBeInTheDocument();
+    expect(
+      screen.getByText("아직 주문 내역을 준비 중이에요!")
+    ).toBeInTheDocument();
+
+    const button = screen.getByRole("button");
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+
+    await waitFor(() => expect(button).toBeEnabled(), { timeout: 3000 });
+    await screen.findByText(
+      "가게에 도착하셨다면 버튼을 눌러주세요! 주문하신 물건을 저희 직원이 가져다 드리겠습니다!"
+    );
+
+    userEvent.click(button);
+    await waitFor(() => expect(button).not.toBeInTheDocument(), {
+      timeout: 3000,
+    });
+    await screen.findByText(
+      "알려주셔서 감사합니다. 주문이 곧 도착할 예정입니다."
+    );
   });
 });
