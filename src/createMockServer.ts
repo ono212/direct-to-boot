@@ -31,6 +31,13 @@ export function createMockServer() {
           status: "ready",
         };
       });
+
+      this.post("/api/orders/:id", (schema, request) => {
+        return {
+          id: request.params.id,
+          status: "notified",
+        };
+      });
     },
   });
 }

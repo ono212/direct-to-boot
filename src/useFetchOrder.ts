@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 
@@ -12,6 +12,10 @@ const fetchOrder = (orderId: string) => {
   });
 };
 
+const sendNotifyStore = (orderId: string) => {
+  return axios.post(`/api/orders/${orderId}`, { id: orderId });
+};
+
 export const useFetchOrder = (orderId: string) => {
   const [status, setStatus] = useState<string>("initialized");
 
@@ -22,5 +26,13 @@ export const useFetchOrder = (orderId: string) => {
     onSuccess: () => setStatus("ready"),
   });
 
-  return { status };
+  const { mutate: notifyStore } = useMutation(
+    ["sendNotifyStore"],
+    sendNotifyStore,
+    {
+      onSuccess: () => setStatus("notified"),
+    }
+  );
+
+  return { status, notifyStore };
 };

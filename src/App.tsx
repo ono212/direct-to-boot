@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <DirectToBoot orderId="error-order" />
+        <DirectToBoot orderId="order-id" />
       </QueryClientProvider>
     </div>
   );
