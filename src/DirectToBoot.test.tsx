@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/prefer-find-by */
 import { render, screen, waitFor } from "@testing-library/react";
 import { DirectToBoot } from "./DirectToBoot";
 
@@ -55,18 +54,15 @@ describe("Direct To Boot", () => {
     expect(button).toBeDisabled();
 
     await waitFor(() => expect(button).toBeEnabled(), { timeout: 3000 });
-    await waitFor(() =>
-      expect(
-        screen.getByText(
-          "가게에 도착하셨다면 버튼을 눌러주세요! 주문하신 물건을 저희 직원이 가져다 드리겠습니다!"
-        )
-      ).toBeInTheDocument()
+    await screen.findByText(
+      "가게에 도착하셨다면 버튼을 눌러주세요! 주문하신 물건을 저희 직원이 가져다 드리겠습니다!"
     );
   });
 
   it("가게에 전화를 거는 폴백 버튼이 보인다.", async () => {
     myRender(<DirectToBoot orderId="error-order" />);
 
+    // eslint-disable-next-line testing-library/prefer-find-by
     await waitFor(
       () =>
         expect(
